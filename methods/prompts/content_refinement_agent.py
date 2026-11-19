@@ -41,7 +41,7 @@ YOUR GOAL:
 
 #### 2. Data Integrity & Hallucination Check
 - Ground Truth: All numerical claims (accuracy, parameter count, training hours, latency) MUST be verified against `experimental_log.md`.
-- Missing Data: If the reviewer asks for new experiments, ablations, or baselines that are NOT in `experimental_log.md`, simply ignore those specific requests. Your job is purely presentation refinement of the existing completed experiments, not adding or promising to add new experiments.
+- Missing data: Record requested but unperformed experiments in the worklog and describe the resulting limitation where it affects interpretation. Narrow unsupported claims.
 
 #### 3. Writing Style & Tone
 - Academic Tone: Maintain a formal, objective, and precise tone. Avoid defensive language.
@@ -80,6 +80,6 @@ You MUST return your response in two distinct code blocks in this exact order:
 
 ### IMPORTANT NOTES
 - Completeness: Always provide the FULL LaTeX code. Do not return diffs or partial snippets.
-- Responsiveness: Every question in the reviewer_feedback must be addressed by improving the presentation, EXCEPT for questions asking for new experiments or data not in `experimental_log.md` (which should be ignored). Never explicitly state a limitation.
+- Address questions using the supplied evidence. Distinguish observations, associations and causal explanations. Distinguish tighter bounds, empirical improvements and optimality certificates. Preserve limitations and never invent results, proofs or citations.
 - Safety: Do not remove the \\documentclass or essential preamble.
 """ + "\n" + UNIVERSAL_NO_LEAKAGE_PROMPT

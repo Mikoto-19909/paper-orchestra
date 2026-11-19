@@ -52,6 +52,9 @@ Once available, you should download the dataset and place it under the `datasets
 
 ## Usage
 
+For OpenAI writing with a persistent budget, Responses web search, reviewer feedback,
+and resumable PDF builds, follow the [research CLI instructions](docs/openai-research.md).
+
 You can run the paper generation pipeline using the provided bash script or directly via the Python CLI.
 
 ### Using the Bash Script

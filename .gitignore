@@ -1,6 +1,10 @@
 *.pyc
 *.out
 .env
+/.env.local
+/ledger/
+/raw_materials/
+/research-runs/
 *.log
 datasets/*
 paper_output*

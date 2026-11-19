@@ -100,6 +100,8 @@ class HybridLiteratureAgent:
         outline_path: str,
         cutoff_date: Optional[str] = None,
     ):
+        if self.model_name.startswith(("gpt-", "o1", "o3", "o4")):
+            raise ValueError("OpenAI literature discovery requires the budgeted research CLI")
         if not cutoff_date:
             cutoff_date = datetime.datetime.now().strftime("%Y-%m")
 
@@ -173,10 +175,10 @@ class HybridLiteratureAgent:
         if not active_tasks:
             return
 
-        self._safe_print(f"   🔎 Phase 1a: Google Candidates Discovery (MaxPool=10)...")
+        self._safe_print(f"   🔎 Candidate discovery ({self.max_workers} workers)...")
         all_candidates_with_tasks = []
 
-        with ThreadPoolExecutor(max_workers=10) as executor:  # Fast for Google Search!
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             future_to_task = {
                 executor.submit(
                     self._process_search_task_google, task, outline, cutoff_date
@@ -425,6 +427,8 @@ class HybridLiteratureAgent:
         return True
 
     def _discover_candidates(self, task, outline, cutoff_date) -> List[CandidatePaper]:
+        if self.model_name.startswith(("gpt-", "o1", "o3", "o4")):
+            raise ValueError("Use the research CLI for Responses web search")
         intro_plan = outline.get("intro_related_work_plan", {}).get(
             "introduction_strategy", {}
         )

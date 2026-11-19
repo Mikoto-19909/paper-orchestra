@@ -275,7 +275,7 @@ REFLECTION ITERATION {i+1}.
 {self.current_tex}
 
 INSTRUCTION: 
-1. Your goal is to IMPROVE the reviewer score (Current: {self.current_score}).
+1. Revise the paper to accurately reflect the scope, evidence and limitations of the study.
 2. Address the 'Weaknesses' and 'Questions' in the Reviewer Feedback above.
 3. Output the JSON Worklog first, then the Full Revised LaTeX.
 """

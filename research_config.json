@@ -1,0 +1,21 @@
+{
+  "writer": "gpt-6.2-sol",
+  "reviewer": "gpt-6.2-astra",
+  "output_tokens": 2500,
+  "stage_tokens": {
+    "outline": 800,
+    "discovery": 1250,
+    "literature": 800,
+    "review": 1100,
+    "review_summary": 650,
+    "content_check": 1200,
+    "visual": 350
+  },
+  "search_calls": 2,
+  "concurrency": 1,
+  "reviewers": 1,
+  "revisions": 1,
+  "retries": 0,
+  "format_repairs": 1,
+  "public_search": "What primary sources establish classical approximation guarantees and limitations for greedy submodular maximization under a cardinality constraint?"
+}

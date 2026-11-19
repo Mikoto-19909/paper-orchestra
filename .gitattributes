@@ -1,0 +1,6 @@
+# These sources are fingerprinted by the research runner. Match the verified
+# working-tree bytes on every platform so a clean checkout can resume the run.
+research_cli.py text eol=lf
+utils/research_manuscript.py text eol=lf
+utils/research_gateway.py text eol=crlf
+utils/prompt_utils.py text eol=crlf

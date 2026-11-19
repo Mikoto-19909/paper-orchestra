@@ -19,7 +19,7 @@ import time
 import os
 import sys
 import threading
-import cv2  # type: ignore
+from PIL import Image
 import base64
 
 from openai import OpenAI  # type: ignore
@@ -45,7 +45,7 @@ def get_openai_client() -> OpenAI:
                 openai_api_key = os.environ.get("OPENAI_API_KEY")
                 if not openai_api_key:
                     raise ValueError("OPENAI_API_KEY must be set to use OpenAI models.")
-                _openai_client = OpenAI(api_key=openai_api_key)
+                _openai_client = OpenAI(api_key=openai_api_key, max_retries=0)
     return _openai_client
 
 
@@ -137,22 +137,11 @@ def call_openai_models_with_content(
                 messages=messages,
                 **generation_configs,
             )
-            raw_response = response.choices[0].message.content
-            parsed_response = result_parsing_func(raw_response)
-
-            if check_parsed_response_not_none:
-                assert (
-                    parsed_response is not None
-                ), f"Parsed response is None, Here is the raw response:\n{raw_response}"
-
-            return {
-                "raw_response": raw_response,
-                "parsed_response": parsed_response,
-            }
+            break
 
         except Exception as e:
             print(
-                f"Warning: OpenAI API call (model={model_name}) failed on attempt {attempt + 1} of {max_retries}. Error: {e}",
+                f"OpenAI API call (model={model_name}) failed on attempt {attempt + 1}: {type(e).__name__}",
             )
 
             if attempt + 1 == max_retries:
@@ -164,7 +153,12 @@ def call_openai_models_with_content(
             if delay > 0:
                 time.sleep(delay)
 
-    print("Error: Exited retry loop unexpectedly.")
+    else:
+        raise ValueError("max_retries must be at least one")
+    raw_response = response.choices[0].message.content
+    parsed_response = result_parsing_func(raw_response)
+    if check_parsed_response_not_none and parsed_response is None:
+        raise ValueError("Cannot parse the returned content")
     return {
         "raw_response": raw_response,
         "parsed_response": parsed_response,
@@ -195,13 +189,18 @@ def call_openai_models_with_text_prompt(
 
 def get_openai_image_part_from_path(image_path: str):
     with open(image_path, "rb") as image_file:
+        with Image.open(image_file) as image:
+            mime = Image.MIME.get(image.format)
+        if mime not in {"image/png", "image/jpeg", "image/webp", "image/gif"}:
+            raise ValueError("Unsupported OpenAI image format")
+        image_file.seek(0)
         base64_image = base64.b64encode(image_file.read()).decode("utf-8")
 
     image_content = [
         {
             "type": "image_url",
             "image_url": {
-                "url": f"data:image/jpeg;base64,{base64_image}",
+                "url": f"data:{mime};base64,{base64_image}",
             },
         }
     ]

@@ -257,9 +257,16 @@ class TestLiteratureReviewRouting(unittest.TestCase):
                 result = agent._synthesize_content({}, [], "2024-10")
             self.assertEqual(result, {"outline": "ok"})
 
-    def test_search_still_uses_gemini_with_gpt_writer(self):
+    def test_legacy_gpt_search_requires_the_budgeted_runner(self):
         with tempfile.TemporaryDirectory() as tmp:
-            agent = self._make_agent(tmp, "gpt-5")
+            agent = self._make_agent(tmp, "gpt-6.2-sol")
+            with mock.patch.object(lit_mod, "call_gemini_with_contents", gemini_must_not_run):
+                with self.assertRaisesRegex(ValueError, "research CLI"):
+                    agent._discover_candidates({}, {}, "2026-11")
+
+    def test_search_still_uses_gemini_with_gemini_writer(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            agent = self._make_agent(tmp, "gemini-3-flash-preview")
             task = {"search_type": "broad", "focus": "test topic", "context": ""}
             outline = {"intro_related_work_plan": {"introduction_strategy": {}}}
             with mock.patch.object(
